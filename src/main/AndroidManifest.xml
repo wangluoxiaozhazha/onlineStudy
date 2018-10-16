@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.jazzi.onlinestudy">
+
+    <!-- 设置Toolbar中的内容，默认是程序名 -->
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="移动教育"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity android:name=".MainActivity">
+
+        </activity>
+        <!-- 将背景图片融合进状态栏 -->
+        <activity
+            android:name=".activity_fruit"
+            android:theme="@style/FruitActivityTheme" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <!--设置启动活动-->
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--这个框架有两个子布局
+    布局1：主活动的界面
+    布局2：滑动的界面-->
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+    <!--android.support.design.widget.CoordinatorLayout使用这个布局，可以
+        监听所有子控件的各种事件，帮助我们做出合理的相应
+        但是snackbar不在这里，怎么会被监听到呢
+        因为snackbar的make()方法中第一个参数View，snackbar基于它触发
+        而我们传入的view是FloatingActionButton本身，属于CoordinatorLayout子控件
+        所以能理所应当被监听到-->
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <!--标题栏-->
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--高度设置为actionBar高度
+                背景设置为colorPrimary
+                android:theme设置Toolbar单独的主题
+                app:popupTheme设置弹出的主题
+                layout_scrollFlags表示上滚隐藏下滚显示-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:background="@drawable/search"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            <!--这个瓜皮属性导致无法有其他控件在滚动控件的下方，气-->
+                <!--app:layout_scrollFlags="scroll|enterAlways|snap"/>-->
+
+        </android.support.design.widget.AppBarLayout>
+
+
+
+
+
+
+
+        <!--主页面-->
+        <!--因为SwipeRefreshLayout包含了RecyclerView，所以需要把
+            layout_behavior功能移到SwipeRefreshLayout去
+            SwipeRefreshLayout实现刷新功能-->
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/swipe_refresh"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                    <!--这个是滑动图片...............................................-->
+                    <RelativeLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp">
+
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp">
+
+                            <!--存放图片-->
+                            <android.support.v4.view.ViewPager
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:id="@+id/viewpager"/>
+
+                            <!--位于父布局的底部
+                                在x轴居中
+                                子布局以y轴方向排列-->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:gravity="center_horizontal"
+                                android:orientation="vertical"
+                                android:padding="5dp"
+                                android:background="#66000000">
+
+
+                                <!--标题-->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/tv_desc"
+                                    android:textColor="#fff"
+                                    android:text="关于什么是“智能”，就问题多多了"/>
+
+                                <!--存放小圆点容器-->
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/ll_point_container"
+                                    android:orientation="horizontal" />
+
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
+                    <!--这个是滑动图片.............................................-->
+
+                    <!--这个是主界面中课程分类的6个图标-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:orientation="vertical"
+                        android:background="#00000000">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp">
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_marginBottom="20dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_computer_pic"
+                                    android:src="@drawable/kind_computer_pic"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="计算机类"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_marginBottom="20dp">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_control_pic"
+                                    android:src="@drawable/kind_dianzi_pic"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="管理类"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_dianzi_pic"
+                                    android:src="@drawable/kind_dianzi_pic"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="电子类"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_English_pic"
+                                    android:src="@drawable/kind_computer_pic"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="外语类"/>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_build_pic"
+                                    android:src="@drawable/kind_dianzi_pic"
+                                    android:layout_gravity="center"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="建筑类" />
+
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                xmlns:android="http://schemas.android.com/apk/res/android"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_weight="1">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/kind_art_pic"
+                                    android:src="@drawable/kind_dianzi_pic"
+                                    android:layout_gravity="center"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="艺术类"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!--推荐课程以滑动窗口-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:background="#00000000">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="推荐课程"
+                            android:textSize="20dp"
+                            android:layout_marginBottom="20dp"
+                            android:background="#00000000"/>
+                        <!--RecyclerView实现滑动显示
+                    layout_behavior定义了一个布局行为，
+                    让CoordinatorLayout布局中AppBarLayout优先显示吧-->
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycle_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="800dp"
+                            android:background="#00000000" />
+
+                    </LinearLayout>
+
+
+                    <!--合作高校区域-->
+                    <LinearLayout
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#00000000"
+                        android:orientation="vertical"
+                        android:layout_marginTop="20dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="合作高校"
+                            android:textSize="20dp"/>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/school_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+
+
+
+
+
+        <!--最后一个属性是设置按钮悬浮的高度-->
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fab"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_menu"
+            android:elevation="8dp"/>
+    </android.support.design.widget.CoordinatorLayout>
+
+    <!--layout_gravity=start根据系统来判断滑动菜单在左边还是右边
+        将滑动窗口头部设置为nav_header
+        将滑动窗口菜单设置为nav_menu-->
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/nav_menu"
+        app:headerLayout="@layout/nav_header"/>
+
+</android.support.v4.widget.DrawerLayout>
