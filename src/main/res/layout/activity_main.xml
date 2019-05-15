@@ -7,8 +7,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:layout_height="match_parent">
+    <!--android:background="@drawable/background">-->
 
     <!--android.support.design.widget.CoordinatorLayout使用这个布局，可以
         监听所有子控件的各种事件，帮助我们做出合理的相应
@@ -36,9 +36,9 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
-                android:background="@drawable/search"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:background="#D3D3D3"/>
             <!--这个瓜皮属性导致无法有其他控件在滚动控件的下方，气-->
                 <!--app:layout_scrollFlags="scroll|enterAlways|snap"/>-->
 
@@ -87,9 +87,11 @@
 
                             <!--存放图片-->
                             <android.support.v4.view.ViewPager
+                                android:id="@+id/viewpager"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:id="@+id/viewpager"/>
+                                android:layout_alignParentStart="true"
+                                android:layout_alignParentTop="true" />
 
                             <!--位于父布局的底部
                                 在x轴居中
@@ -130,7 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="20dp"
                         android:orientation="vertical"
-                        android:background="#00000000">
+                        >
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -138,16 +140,23 @@
                             <LinearLayout
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
+                                android:id="@+id/computer"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1"
                                 android:layout_marginBottom="20dp">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_computer_pic"-->
+                                    <!--android:src="@drawable/kind_computer_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
                                     android:id="@+id/kind_computer_pic"
-                                    android:src="@drawable/kind_computer_pic"
+                                    android:src="@drawable/m7"
                                     android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -158,6 +167,7 @@
                             </LinearLayout>
 
                             <LinearLayout
+                                android:id="@+id/manage"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -165,11 +175,17 @@
                                 android:layout_weight="1"
                                 android:layout_marginBottom="20dp">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/kind_control_pic"
-                                    android:src="@drawable/kind_dianzi_pic"
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_control_pic"-->
+                                    <!--android:src="@drawable/kind_guanli_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:id="@+id/kind_guanli_pic"
+                                    android:src="@drawable/m1"
                                     android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -180,17 +196,24 @@
                             </LinearLayout>
 
                             <LinearLayout
+                                android:id="@+id/electron"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_dianzi_pic"-->
+                                    <!--android:src="@drawable/kind_dianzi_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
                                     android:id="@+id/kind_dianzi_pic"
-                                    android:src="@drawable/kind_dianzi_pic"
+                                    android:src="@drawable/m2"
                                     android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -206,17 +229,24 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <LinearLayout
+                                android:id="@+id/language"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/kind_English_pic"
-                                    android:src="@drawable/kind_computer_pic"
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_English_pic"-->
+                                    <!--android:src="@drawable/kind_computer_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:id="@+id/kind_waiyu_pic"
+                                    android:src="@drawable/m3"
                                     android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -227,19 +257,26 @@
                             </LinearLayout>
 
                             <LinearLayout
+                                android:id="@+id/build"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/kind_build_pic"
-                                    android:src="@drawable/kind_dianzi_pic"
-                                    android:layout_gravity="center"/>
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_build_pic"-->
+                                    <!--android:src="@drawable/kind_jianzhu_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
 
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:id="@+id/kind_build_pic"
+                                    android:src="@drawable/m4"
+                                    android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -250,17 +287,24 @@
                             </LinearLayout>
 
                             <LinearLayout
+                                android:id="@+id/art"
                                 xmlns:android="http://schemas.android.com/apk/res/android"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:layout_weight="1">
 
-                                <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:id="@+id/kind_art_pic"
-                                    android:src="@drawable/kind_dianzi_pic"
+                                <!--<ImageView-->
+                                    <!--android:layout_width="wrap_content"-->
+                                    <!--android:layout_height="wrap_content"-->
+                                    <!--android:id="@+id/kind_art_pic"-->
+                                    <!--android:src="@drawable/kind_yishu_pic"-->
+                                    <!--android:layout_gravity="center"/>-->
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    android:id="@+id/kind_yishu_pic"
+                                    android:src="@drawable/m5"
                                     android:layout_gravity="center"/>
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -272,13 +316,17 @@
 
                         </LinearLayout>
                     </LinearLayout>
-
+                    <ImageView
+                        android:layout_width="fill_parent"
+                        android:layout_height="10dp"
+                        android:background="#4444"
+                        />
                     <!--推荐课程以滑动窗口-->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:background="#00000000">
+                        >
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -303,7 +351,7 @@
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#00000000"
+                        android:background="#CDCDCDCD"
                         android:orientation="vertical"
                         android:layout_marginTop="20dp">
                         <TextView

@@ -67,8 +67,13 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
                 int position=holder.getAdapterPosition();
                 Fruit fruit=mFruitList.get(position);
                 Intent intent =new Intent(mContext,activity_fruit.class);
-                intent.putExtra(activity_fruit.FRUIT_NAME,fruit.getName());
-                intent.putExtra(activity_fruit.FRUIT_IMAGE_ID,fruit.getImageId());
+                intent.putExtra("id",fruit.getResourceId());
+                intent.putExtra(activity_fruit.FRUIT_NAME,fruit.getCourseName());
+                intent.putExtra("image_url",fruit.getCoverPath());
+                intent.putExtra("course_controduction",fruit.getCourseIntroduction());
+                intent.putExtra("course_teacher",fruit.getLecturer());
+                intent.putExtra("numberEpisodes",fruit.getNumberEpisodes());
+                intent.putExtra("CoursePath",fruit.getCoursePath());
                 mContext.startActivity(intent);
             }
         });
@@ -88,8 +93,8 @@ public class FruitAdapter extends RecyclerView.Adapter<FruitAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Fruit fruit=mFruitList.get(position);
-        holder.fruitName.setText(fruit.getName());
-        Glide.with(mContext).load(fruit.getImageId()).into(holder.fruitImage);
+        holder.fruitName.setText(fruit.getCourseName());
+        Glide.with(mContext).load(IpConfig.getIp()+":8080/getImage/?id="+fruit.getResourceId()).into(holder.fruitImage);
 //        holder.fruitImage.setImageResource(fruit.getImageId());
 
     }

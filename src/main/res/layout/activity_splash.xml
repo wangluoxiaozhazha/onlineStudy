@@ -17,14 +17,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text=" 广告 "
-            android:textColor="#04f1f1"
+            android:textColor="#000000"
             android:textSize="20sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text=" | "
-            android:textColor="#0bb0f1"
+            android:textColor="#000000"
             android:textSize="20sp" />
         <TextView
             android:id="@+id/sec_view"
@@ -32,38 +32,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text=" 5 "
-            android:textColor="#07e0ec"
+            android:textColor="#000000"
             android:textSize="20sp" />
         
     </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/adv_master" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="QQ:815956033"
-            android:textColor="#fff"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="by:肖阳"
-            android:textColor="#fff"/>
-
-    </LinearLayout>
 
 
 </RelativeLayout>

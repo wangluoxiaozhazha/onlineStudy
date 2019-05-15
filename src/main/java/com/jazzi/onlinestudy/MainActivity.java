@@ -1,5 +1,11 @@
 package com.jazzi.onlinestudy;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,10 +22,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.support.v7.widget.RecyclerView;
@@ -27,13 +35,24 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /*别忘记导入正确的Toolbar，安卓的Toolbar有多个，会有歧义
 * 将实例调入setSupportActionBar应用成功即可*/
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener{
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener,View.OnClickListener{
 
     /*滑动图片所需的***************************/
     public ViewPager viewPager;
@@ -43,8 +62,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public String suggestion[];
     public List<ImageView> mImageViewList;
     private int prepos=0;
+    private NavigationView navView;
+    private TextView username1;
+    private ImageView imageView;
+    private LinearLayout[] classify=new LinearLayout[6];
+    private String userId;
+    private RecyclerView fruitRecyclerView;
     /*滑动图片所需的***************************/
-
 
     /**合作高校所需***********************/
     private List<School> schools;
@@ -53,35 +77,67 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
 
 
-
     private DrawerLayout mDrawerLayout;
-    private Fruit[] fruits={new Fruit("人工智能",R.drawable.pingguo),
-        new Fruit("玩转流行音乐",R.drawable.boluo),
-        new Fruit("高等数学",R.drawable.caomei),
-        new Fruit("设计的力量",R.drawable.juzi)};
+//    private Fruit[] fruits={new Fruit("人工智能",R.drawable.pingguo),
+//        new Fruit("玩转流行音乐",R.drawable.boluo),
+//        new Fruit("高等数学",R.drawable.caomei),
+//        new Fruit("设计的力量",R.drawable.juzi)};
 
+    private Fruit[] fruits;
     private List<Fruit> fruitList=new ArrayList<>();
     private FruitAdapter fruitAdapter;
 
     private SwipeRefreshLayout swipeRefresh;
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*****解析JSON*****/
+        sendRequestWithOkHttp();
+        /*****解析JSON*****/
 
         /*滑动图片所需的***************************/
         initView();
         initData();
         initMyAdapter();
         /*滑动图片所需的***************************/
+        navView =(NavigationView) findViewById(R.id.nav_view);
+        View headerView = navView.getHeaderView(0);
+        username1=(TextView)headerView.findViewById(R.id.username1);
+        imageView=(ImageView) headerView.findViewById(R.id.icon_image);
+        fruitRecyclerView=(RecyclerView)findViewById(R.id.recycle_view);
+        Intent intent=getIntent();
+        final String userName=intent.getStringExtra("userName");
+        final String uimagePath=intent.getStringExtra("uimagePath");
+        userId=intent.getStringExtra("userID");
+        if (userName!=null){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bundle bundle=new Bundle();
+                    bundle.putString("userName",userName);
+                    bundle.putString("uimagePath",uimagePath);
+                    Message message=new Message();
+                    message.setData(bundle);
+                    handler1.sendMessage(message);
+                }
+            }).start();
+        }
 
-
-
-
+        /*************搜索键所需************/
         Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        /*************搜索键所需************/
+
+
 
         /*设置滑动列表布局*/
         mDrawerLayout =(DrawerLayout)findViewById(R.id.drawer_layout);
@@ -99,18 +155,46 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         /*获得滑动窗口实例
         * 开启选项监听器
         * 设置点击选项触发事件，关闭滑动窗口*/
-        NavigationView navView =(NavigationView) findViewById(R.id.nav_view);
+
         /*选中清除缓存项*/
         navView.setCheckedItem(R.id.nav_call);
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-                mDrawerLayout.closeDrawers();
+                switch (item.getItemId()) {
+                    case R.id.nav_call://注册事件
+                        Intent intent = new Intent(MainActivity.this,RegisterActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.nav_mylove://我的喜欢课程
+                        Intent intent1=new Intent(MainActivity.this,ClassifyActivity.class);
+                        intent1.putExtra("ClassName","我的课程");
+                        intent1.putExtra("no","2");
+                        intent1.putExtra("userId",userId);
+                        startActivity(intent1);
+                        break;
+                    case R.id.nav_about://关于
+                        Intent intent2 = new Intent(MainActivity.this,SetIpActivity.class);
+                        startActivity(intent2);
+                        break;
+
+                }
+//                mDrawerLayout.closeDrawers();
                 return true;
             }
         });
 
+        //设置头部监听事件
+
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+            }
+        });
         FloatingActionButton fab=(FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             /*触发一个动画效果的提示框
@@ -141,12 +225,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         * 放入可滑动布局recyclerView
         * 创建水果适配器
         * 适配器+控件=最终结果*/
-        initFruits();
-        RecyclerView fruitRecyclerView=(RecyclerView) findViewById(R.id.recycle_view);
-        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
-        fruitRecyclerView.setLayoutManager(layoutManager);
-        fruitAdapter =new FruitAdapter(fruitList);
-        fruitRecyclerView.setAdapter(fruitAdapter);
+//        initFruits();
+//        RecyclerView fruitRecyclerView=(RecyclerView) findViewById(R.id.recycle_view);
+//        GridLayoutManager layoutManager=new GridLayoutManager(this,2);
+//        fruitRecyclerView.setLayoutManager(layoutManager);
+//        fruitAdapter =new FruitAdapter(fruitList);
+//        fruitRecyclerView.setAdapter(fruitAdapter);
+
 
         /*setColorSchemeResources来设置下来刷新进度条的颜色
         * 设置下拉刷新器，当触发下拉的时候，就会调用这个监听器的onRefresh()方法*/
@@ -173,12 +258,23 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         //创建适配器
         SchoolAdapter SchoolAdapter =new SchoolAdapter(schools);
         //适配器+控件==最终结果
-        /*mmp,mmp,mmp我设置适配器设置到推荐课程的布局里去了，caocoacaocoacao
-        * 论起一个精确名字的重要性*/
+       /* 论起一个精确名字的重要性*/
         schoolLayout.setAdapter(SchoolAdapter);
 
 
-        /**合作高校所需***********************/
+        //给分类按钮初始化和注册监听
+        classify[0]=(LinearLayout)findViewById(R.id.computer);
+        classify[1]=(LinearLayout)findViewById(R.id.manage);
+        classify[2]=(LinearLayout)findViewById(R.id.electron);
+        classify[3]=(LinearLayout)findViewById(R.id.language);
+        classify[4]=(LinearLayout)findViewById(R.id.build);
+        classify[5]=(LinearLayout)findViewById(R.id.art);
+        classify[0].setOnClickListener(this);
+        classify[1].setOnClickListener(this);
+        classify[2].setOnClickListener(this);
+        classify[3].setOnClickListener(this);
+        classify[4].setOnClickListener(this);
+        classify[5].setOnClickListener(this);
 
     }
 
@@ -219,8 +315,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        initFruits();
-                        fruitAdapter.notifyDataSetChanged();
+                        fruitList.clear();
+                        sendRequestWithOkHttp();
+//                        initFruits();
+//                        fruitAdapter.notifyDataSetChanged();
                         swipeRefresh.setRefreshing(false);
                     }
                 });
@@ -231,12 +329,15 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     /*将fruitList容器清空
     * 并且随机取fruits中50个可重复的Fruit对象加入fruitList中*/
     private void initFruits(){
-        fruitList.clear();
-        for(int i=0;i<12;++i){
-            Random random=new Random();
-            int index=random.nextInt(fruits.length);
-            fruitList.add(fruits[index]);
-        }
+//        fruitList.clear();
+//        for(int i=0;i<12;++i){
+//            Random random=new Random();
+//            int index=random.nextInt(fruits.length);
+//            fruitList.add(fruits[index]);
+//        }
+
+        Collections.reverse(fruitList);
+
     }
 
 
@@ -251,34 +352,16 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     返回flase，不会显示菜单
     自动加载菜单方法，自动运行。*/
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.toolbar,menu);
+        getMenuInflater().inflate(R.menu.nav_menu,menu);
         return true;
     }
 
     /*这个方法中处理菜单中各个按钮的点击事件
     * 左上角返回按钮的id默认是android.R.id.home
     * openDrawer即把这个滑动列表展示出来*/
+
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            /*该功能已被弃用，登录放在浮悬按钮上了*/
-//            case android.R.id.home:
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-//                break;
-//            case R.id.backup:
-//                Toast.makeText(this,"你点击了返回",Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.delete:
-//                Toast.makeText(this,"你点击了删除",Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.settings:
-//                Toast.makeText(this,"你点击了设置",Toast.LENGTH_SHORT).show();
-//                break;
-//            case R.id.item_search:
-//                break;
-            default:
-                break;
-        }
+    public boolean onOptionsItemSelected(MenuItem item){
         return true;
     }
 
@@ -328,6 +411,39 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public void initMyAdapter(){
         point.getChildAt(0).setEnabled(true);
         viewPager.setAdapter(new MyAdapter());
+    }
+
+    //分类点击事件
+    @Override
+    public void onClick(View view) {
+
+        String ClassName=null;
+        switch (view.getId()){
+            case R.id.computer:
+                ClassName="计算机类";
+                break;
+            case R.id.manage:
+                ClassName="管理类";
+                break;
+            case R.id.electron:
+                ClassName="电子类";
+                break;
+            case R.id.language:
+                ClassName="外语类";
+                break;
+            case R.id.build:
+                ClassName="建筑类";
+                break;
+            case R.id.art:
+                ClassName="艺术类";
+                break;
+            default:
+                break;
+        }
+        Intent intent=new Intent(MainActivity.this,ClassifyActivity.class);
+        intent.putExtra("ClassName",ClassName);
+        intent.putExtra("no","1");
+        startActivity(intent);
     }
 
     /*建立一个适配器*/
@@ -385,17 +501,22 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
      * 注：切换图片后自动选中切换后的图片*/
     @Override
     public void onPageSelected(int position) {
+//        int newPosition=position%mImageViewList.size();
+//        title.setText(suggestion[newPosition]);
+//
+//        point.getChildAt(prepos).setEnabled(false);
+//        point.getChildAt(newPosition).setEnabled(true);
+//        prepos=newPosition;
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         int newPosition=position%mImageViewList.size();
         title.setText(suggestion[newPosition]);
 
         point.getChildAt(prepos).setEnabled(false);
         point.getChildAt(newPosition).setEnabled(true);
         prepos=newPosition;
-    }
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
     }
 
     @Override
@@ -408,4 +529,99 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         super.onDestroy();
     }
     /*滑动图片所需的***************************/
+
+
+
+    /*******************    解析json ****************/
+    //记得给app加网络权限，在androidmanifest.xml中
+    private void sendRequestWithOkHttp(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    OkHttpClient client=new OkHttpClient();
+                    Request request =new Request.Builder()
+                            .url(IpConfig.getIp()+":8080/resource/selectall")
+                            .build();
+                    Response response=client.newCall(request).execute();
+                    String responseData =response.body().string();
+
+                    parseClassJson(responseData);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+            }
+        }).start();
+    }
+    private void parseClassJson(String jsonData){
+        try{
+            JSONArray jsonArray =new JSONArray(jsonData);
+            for (int i=0;i<jsonArray.length();i++){
+                JSONObject jsonObject=jsonArray.getJSONObject(i);
+                int resourceID=jsonObject.getInt("resourceID");
+                String courseName=jsonObject.getString("courseName");
+                String coverPath=jsonObject.getString("coverPath");
+                String courseIntroduction=jsonObject.getString("courseIntroduction");
+                String teacher=jsonObject.getString("lecturer");
+                int numberEpisodes=Integer.parseInt(jsonObject.getString("numberEpisodes"));
+
+                Fruit tmp=new Fruit();
+                tmp.setResourceId(resourceID);
+                tmp.setCourseName(courseName);
+                tmp.setCoverPath(coverPath);
+                tmp.setCourseIntroduction(courseIntroduction);
+                tmp.setLecturer(teacher);
+                tmp.setNumberEpisodes(numberEpisodes);
+                fruitList.add(tmp);
+            }
+            Message message=new Message();
+            handler.sendMessage(message);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /*******************    解析json ****************/
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            GridLayoutManager layoutManager=new GridLayoutManager(MainActivity.this,2);
+            fruitRecyclerView.setLayoutManager(layoutManager);
+            fruitAdapter =new FruitAdapter(fruitList);
+            fruitRecyclerView.setAdapter(fruitAdapter);
+        }
+    };
+
+    private Handler handler1=new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            username1.setText(msg.getData().getString("userName"));
+        }
+    };
+    public Bitmap getHttpBitmap(String url){//根据网络路径获得图片
+        URL myFileURL;
+        Bitmap bitmap=null;
+
+        try {
+            myFileURL=new URL(url);
+            HttpURLConnection conn=(HttpURLConnection)myFileURL.openConnection();
+
+            conn.setConnectTimeout(6000);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+
+            InputStream is=conn.getInputStream();
+            bitmap=BitmapFactory.decodeStream(is);
+            is.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
 }
